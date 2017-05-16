@@ -1,0 +1,23 @@
+mydata<-read.csv("D:/accenture/oec_ind_data.csv")
+attach(mydata)
+p_ind<-(mydata$name=='Polishing Stones')
+p_data<-mydata[p_ind,]
+p_ecol<-c("export_val")
+p_icol<-c("import_val")
+n_edata<-p_data[p_ecol]
+#n_idata<-p_data[p_icol]
+n_edata<-n_edata[,]
+n_edata<-ts(n_edata, start = c(1969), end=c(2015), frequency=12)
+dn_edata<-diff(n_edata,4)
+
+auto.arima(n_edata$export_val)
+arima.final<-arima(n_edata$export_val,c(2,2,1))
+predicted<-predict(arima.final,n.ahead=10)
+predicted
+#tsdiag(arima.final)
+#ts.n_edata=ts(n_edata,start=c(1969))
+#plot(ts.n_edata)
+
+fit_diff_ar<-arima(n_edata, order=c(2,2,1))
+fit_diff_arf<-forecast(fit_diff_ar, h=12)
+plot(fit_diff_arf, include=20)
